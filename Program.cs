@@ -133,14 +133,15 @@ var app = builder.Build();
 app.UseResponseCompression();
 app.UseMiddleware<SecurityHeadersMiddleware>();
 
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "LocationMap API v1");
+    options.RoutePrefix = "swagger";
+});
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LocationMap API v1");
-        options.RoutePrefix = "swagger";
-    });
     app.UseCors("AllowAll");
 }
 else
