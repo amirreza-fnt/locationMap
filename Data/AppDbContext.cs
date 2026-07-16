@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<MapPointMedia> MapPointMedia => Set<MapPointMedia>();
     public DbSet<MapUser> MapUsers => Set<MapUser>();
+    public DbSet<Guide> Guides => Set<Guide>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,7 +22,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<MapPoint>(entity =>
         {
             entity.HasIndex(e => e.Status);
-            entity.HasIndex(e => e.CategoryId);
+            entity.HasIndex(e => e.GuideId);
             entity.HasIndex(e => e.SubmittedById);
             entity.HasIndex(e => e.Latitude);
             entity.HasIndex(e => e.Longitude);
@@ -30,9 +31,9 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Latitude).HasPrecision(10, 8);
             entity.Property(e => e.Longitude).HasPrecision(11, 8);
 
-            entity.HasOne(e => e.Category)
-                  .WithMany(c => c.MapPoints)
-                  .HasForeignKey(e => e.CategoryId)
+            entity.HasOne(e => e.Guide)
+                  .WithMany(g => g.MapPoints)
+                  .HasForeignKey(e => e.GuideId)
                   .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(e => e.SubmittedBy)
@@ -51,6 +52,21 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => e.IsActive);
             entity.HasIndex(e => e.SortOrder);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<Guide>(entity =>
+        {
+            entity.HasIndex(e => e.CategoryId);
+            entity.HasIndex(e => e.IsActive);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Description).HasMaxLength(2000);
+            entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            entity.Property(e => e.Icon).HasMaxLength(100);
+
+            entity.HasOne(e => e.Category)
+                  .WithMany(c => c.Guides)
+                  .HasForeignKey(e => e.CategoryId)
+                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<MapPointMedia>(entity =>

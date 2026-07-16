@@ -133,15 +133,14 @@ var app = builder.Build();
 app.UseResponseCompression();
 app.UseMiddleware<SecurityHeadersMiddleware>();
 
-app.UseSwagger();
-app.UseSwaggerUI(options =>
-{
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "LocationMap API v1");
-    options.RoutePrefix = "swagger";
-});
-
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LocationMap API v1");
+        options.RoutePrefix = "swagger";
+    });
     app.UseCors("AllowAll");
 }
 else
@@ -195,14 +194,14 @@ static async Task SeedDataAsync(AppDbContext context, ILogger logger)
 
     var categories = new List<Category>
     {
-        new() { Name = "کوچه‌ها", Icon = "road", Color = "#FF5733", SortOrder = 1 },
-        new() { Name = "پارک‌ها", Icon = "tree", Color = "#33FF57", SortOrder = 2 },
-        new() { Name = "مراکز خرید", Icon = "shopping-cart", Color = "#3357FF", SortOrder = 3 },
-        new() { Name = "مساجد", Icon = "mosque", Color = "#FF33F5", SortOrder = 4 },
-        new() { Name = "بیمارستان‌ها", Icon = "hospital", Color = "#FF3333", SortOrder = 5 },
-        new() { Name = "مدارس", Icon = "school", Color = "#33FFF5", SortOrder = 6 },
-        new() { Name = "اماکن ورزشی", Icon = "sports", Color = "#F5FF33", SortOrder = 7 },
-        new() { Name = "سایر", Icon = "map-pin", Color = "#808080", SortOrder = 8 }
+        new() { Name = "کوچه‌ها", Color = "#FF5733", SortOrder = 1 },
+        new() { Name = "پارک‌ها", Color = "#33FF57", SortOrder = 2 },
+        new() { Name = "مراکز خرید", Color = "#3357FF", SortOrder = 3 },
+        new() { Name = "مساجد", Color = "#FF33F5", SortOrder = 4 },
+        new() { Name = "بیمارستان‌ها", Color = "#FF3333", SortOrder = 5 },
+        new() { Name = "مدارس", Color = "#33FFF5", SortOrder = 6 },
+        new() { Name = "اماکن ورزشی", Color = "#F5FF33", SortOrder = 7 },
+        new() { Name = "سایر", Color = "#808080", SortOrder = 8 }
     };
 
     context.Categories.AddRange(categories);

@@ -11,7 +11,7 @@ public class MapPointListDto
     public decimal Longitude { get; set; }
     public string? Address { get; set; }
     public string CategoryName { get; set; } = string.Empty;
-    public string? CategoryIcon { get; set; }
+    public string? GuideIcon { get; set; }
     public string? CategoryColor { get; set; }
     public PointStatus Status { get; set; }
     public string SubmittedByName { get; set; } = string.Empty;

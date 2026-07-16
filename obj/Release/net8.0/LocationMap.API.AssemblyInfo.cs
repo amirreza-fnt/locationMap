@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LocationMap.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+11f67c5eb784821b5c627d595ca164c67653c6f5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ba1fa95bbc60def62694e323c7088d8abd2fd64")]
 [assembly: System.Reflection.AssemblyProductAttribute("LocationMap.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LocationMap.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

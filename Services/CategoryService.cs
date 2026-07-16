@@ -22,8 +22,9 @@ public class CategoryService : ICategoryService
     {
         var categories = await _categoryRepo.GetAllActiveAsync();
         var pointCounts = await _context.MapPoints
+            .Include(m => m.Guide)
             .Where(m => m.Status == Models.Enums.PointStatus.Approved)
-            .GroupBy(m => m.CategoryId)
+            .GroupBy(m => m.Guide.CategoryId)
             .Select(g => new { CategoryId = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.CategoryId, x => x.Count);
 
@@ -31,7 +32,6 @@ public class CategoryService : ICategoryService
         {
             Id = c.Id,
             Name = c.Name,
-            Icon = c.Icon,
             Color = c.Color,
             SortOrder = c.SortOrder,
             PointCount = pointCounts.GetValueOrDefault(c.Id, 0)
@@ -43,7 +43,6 @@ public class CategoryService : ICategoryService
         var category = new Category
         {
             Name = dto.Name,
-            Icon = dto.Icon,
             Color = dto.Color,
             SortOrder = dto.SortOrder
         };
@@ -58,7 +57,6 @@ public class CategoryService : ICategoryService
         if (category == null) return false;
 
         category.Name = dto.Name;
-        category.Icon = dto.Icon;
         category.Color = dto.Color;
         category.SortOrder = dto.SortOrder;
 

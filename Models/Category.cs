@@ -14,9 +14,6 @@ public class Category
     [MaxLength(100)]
     public string Name { get; set; } = string.Empty;
 
-    [MaxLength(200)]
-    public string? Icon { get; set; }
-
     [MaxLength(20)]
     public string? Color { get; set; }
 
@@ -26,5 +23,5 @@ public class Category
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public virtual ICollection<MapPoint> MapPoints { get; set; } = new List<MapPoint>();
+    public virtual ICollection<Guide> Guides { get; set; } = new List<Guide>();
 }
