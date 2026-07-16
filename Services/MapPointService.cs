@@ -93,6 +93,7 @@ public class MapPointService : IMapPointService
             Latitude = dto.Latitude,
             Longitude = dto.Longitude,
             Address = dto.Address,
+            CategoryId = dto.CategoryId,
             GuideId = dto.GuideId,
             SubmittedById = submitter.Id,
             Status = PointStatus.Pending
@@ -112,6 +113,7 @@ public class MapPointService : IMapPointService
         if (dto.Latitude.HasValue) point.Latitude = dto.Latitude.Value;
         if (dto.Longitude.HasValue) point.Longitude = dto.Longitude.Value;
         if (dto.Address != null) point.Address = dto.Address;
+        if (dto.CategoryId.HasValue) point.CategoryId = dto.CategoryId.Value;
         if (dto.GuideId.HasValue) point.GuideId = dto.GuideId.Value;
 
         await _pointRepo.UpdateAsync(point);
@@ -171,9 +173,10 @@ public class MapPointService : IMapPointService
             Latitude = point.Latitude,
             Longitude = point.Longitude,
             Address = point.Address,
-            CategoryName = point.Guide?.Category?.Name ?? "",
+            CategoryName = point.Category?.Name ?? point.Guide?.Category?.Name ?? "",
+            CategoryIcon = point.Guide?.Icon,
             GuideIcon = point.Guide?.Icon,
-            CategoryColor = point.Guide?.Category?.Color,
+            CategoryColor = point.Category?.Color ?? point.Guide?.Category?.Color,
             Status = point.Status,
             SubmittedByName = point.SubmittedBy?.FullName ?? "",
             SubmittedAt = point.SubmittedAt,
@@ -192,10 +195,12 @@ public class MapPointService : IMapPointService
             Latitude = point.Latitude,
             Longitude = point.Longitude,
             Address = point.Address,
+            CategoryId = point.CategoryId,
             GuideId = point.GuideId,
-            CategoryName = point.Guide?.Category?.Name ?? "",
+            CategoryName = point.Category?.Name ?? point.Guide?.Category?.Name ?? "",
+            CategoryIcon = point.Guide?.Icon,
             GuideIcon = point.Guide?.Icon,
-            CategoryColor = point.Guide?.Category?.Color,
+            CategoryColor = point.Category?.Color ?? point.Guide?.Category?.Color,
             Status = point.Status,
             SubmittedByName = point.SubmittedBy?.FullName ?? "",
             SubmittedByMelliCode = point.SubmittedBy?.MelliCode,

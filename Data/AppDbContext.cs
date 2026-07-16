@@ -22,6 +22,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<MapPoint>(entity =>
         {
             entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.CategoryId);
             entity.HasIndex(e => e.GuideId);
             entity.HasIndex(e => e.SubmittedById);
             entity.HasIndex(e => e.Latitude);
@@ -30,6 +31,11 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Latitude).HasPrecision(10, 8);
             entity.Property(e => e.Longitude).HasPrecision(11, 8);
+
+            entity.HasOne(e => e.Category)
+                  .WithMany()
+                  .HasForeignKey(e => e.CategoryId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(e => e.Guide)
                   .WithMany(g => g.MapPoints)

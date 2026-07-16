@@ -26,6 +26,8 @@ public class MapPoint
     [MaxLength(500)]
     public string? Address { get; set; }
 
+    public Guid CategoryId { get; set; }
+
     public Guid GuideId { get; set; }
 
     public PointStatus Status { get; set; } = PointStatus.Pending;
@@ -44,6 +46,9 @@ public class MapPoint
     public DateTime? UpdatedAt { get; set; }
 
     public long VisitCount { get; set; } = 0;
+
+    [ForeignKey(nameof(CategoryId))]
+    public virtual Category Category { get; set; } = null!;
 
     [ForeignKey(nameof(GuideId))]
     public virtual Guide Guide { get; set; } = null!;

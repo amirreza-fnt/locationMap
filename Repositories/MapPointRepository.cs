@@ -18,7 +18,8 @@ public class MapPointRepository : IMapPointRepository
     public async Task<MapPoint?> GetByIdAsync(Guid id)
     {
         return await _context.MapPoints
-            .Include(m => m.Guide).ThenInclude(g => g.Category)
+            .Include(m => m.Category)
+            .Include(m => m.Guide)
             .Include(m => m.SubmittedBy)
             .Include(m => m.ReviewedBy)
             .Include(m => m.Media)
@@ -28,14 +29,15 @@ public class MapPointRepository : IMapPointRepository
     public async Task<IEnumerable<MapPoint>> GetApprovedAsync(int page, int pageSize, Guid? categoryId = null)
     {
         var query = _context.MapPoints
-            .Include(m => m.Guide).ThenInclude(g => g.Category)
+            .Include(m => m.Category)
+            .Include(m => m.Guide)
             .Include(m => m.SubmittedBy)
             .Include(m => m.Media.Where(md => md.IsMain))
             .Where(m => m.Status == PointStatus.Approved)
             .OrderByDescending(m => m.SubmittedAt);
 
         if (categoryId.HasValue)
-            query = (IOrderedQueryable<MapPoint>)query.Where(m => m.Guide.CategoryId == categoryId.Value);
+            query = (IOrderedQueryable<MapPoint>)query.Where(m => m.CategoryId == categoryId.Value);
 
         return await query
             .Skip((page - 1) * pageSize)
@@ -46,7 +48,8 @@ public class MapPointRepository : IMapPointRepository
     public async Task<IEnumerable<MapPoint>> GetByStatusAsync(PointStatus status, int page, int pageSize)
     {
         return await _context.MapPoints
-            .Include(m => m.Guide).ThenInclude(g => g.Category)
+            .Include(m => m.Category)
+            .Include(m => m.Guide)
             .Include(m => m.SubmittedBy)
             .Where(m => m.Status == status)
             .OrderByDescending(m => m.SubmittedAt)
@@ -58,7 +61,8 @@ public class MapPointRepository : IMapPointRepository
     public async Task<IEnumerable<MapPoint>> GetBySubmitterAsync(Guid submitterId)
     {
         return await _context.MapPoints
-            .Include(m => m.Guide).ThenInclude(g => g.Category)
+            .Include(m => m.Category)
+            .Include(m => m.Guide)
             .Where(m => m.SubmittedById == submitterId)
             .OrderByDescending(m => m.SubmittedAt)
             .ToListAsync();
@@ -68,7 +72,7 @@ public class MapPointRepository : IMapPointRepository
     {
         var query = _context.MapPoints.Where(m => m.Status == PointStatus.Approved);
         if (categoryId.HasValue)
-            query = query.Where(m => m.Guide.CategoryId == categoryId.Value);
+            query = query.Where(m => m.CategoryId == categoryId.Value);
         return await query.CountAsync();
     }
 

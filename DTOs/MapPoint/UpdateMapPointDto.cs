@@ -16,5 +16,7 @@ public class UpdateMapPointDto
     [MaxLength(500)]
     public string? Address { get; set; }
 
+    public Guid? CategoryId { get; set; }
+
     public Guid? GuideId { get; set; }
 }
