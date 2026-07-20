@@ -22,9 +22,8 @@ public class CategoryService : ICategoryService
     {
         var categories = await _categoryRepo.GetAllActiveAsync();
         var pointCounts = await _context.MapPoints
-            .Include(m => m.Guide)
             .Where(m => m.Status == Models.Enums.PointStatus.Approved)
-            .GroupBy(m => m.Guide.CategoryId)
+            .GroupBy(m => m.CategoryId)
             .Select(g => new { CategoryId = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.CategoryId, x => x.Count);
 

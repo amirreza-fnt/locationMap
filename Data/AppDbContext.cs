@@ -62,17 +62,11 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Guide>(entity =>
         {
-            entity.HasIndex(e => e.CategoryId);
             entity.HasIndex(e => e.IsActive);
             entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Description).HasMaxLength(2000);
             entity.Property(e => e.ImageUrl).HasMaxLength(500);
             entity.Property(e => e.Icon).HasMaxLength(100);
-
-            entity.HasOne(e => e.Category)
-                  .WithMany(c => c.Guides)
-                  .HasForeignKey(e => e.CategoryId)
-                  .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<MapPointMedia>(entity =>

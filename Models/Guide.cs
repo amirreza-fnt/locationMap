@@ -10,9 +10,6 @@ public class Guide
     public Guid Id { get; set; }
 
     [Required]
-    public Guid CategoryId { get; set; }
-
-    [Required]
     [MaxLength(200)]
     public string Title { get; set; } = string.Empty;
 
@@ -30,9 +27,6 @@ public class Guide
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    [ForeignKey(nameof(CategoryId))]
-    public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<MapPoint> MapPoints { get; set; } = new List<MapPoint>();
 }

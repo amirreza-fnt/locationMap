@@ -1,3 +1,6 @@
+using Map.Shared.Auth.Authorization;
+using Map.Shared.Auth.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LocationMap.API.DTOs.MapPoint;
 using LocationMap.API.Services.Interfaces;
@@ -61,6 +64,7 @@ public class MapPointController : ControllerBase
     }
 
     [HttpPost]
+    [HasPermission(PermissionConstants.PointCreate)]
     public async Task<IActionResult> Create([FromBody] CreateMapPointDto dto)
     {
         try
@@ -81,6 +85,7 @@ public class MapPointController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [HasPermission(PermissionConstants.PointUpdate)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateMapPointDto dto)
     {
         try
@@ -99,6 +104,7 @@ public class MapPointController : ControllerBase
     }
 
     [HttpPut("{id}/review")]
+    [HasPermission(PermissionConstants.PointReview)]
     public async Task<IActionResult> Review(Guid id, [FromBody] ReviewMapPointDto dto)
     {
         try
@@ -119,6 +125,7 @@ public class MapPointController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [HasPermission(PermissionConstants.PointDelete)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try

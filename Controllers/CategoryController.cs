@@ -1,3 +1,6 @@
+using Map.Shared.Auth.Authorization;
+using Map.Shared.Auth.Permissions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LocationMap.API.DTOs.Category;
 using LocationMap.API.Services.Interfaces;
@@ -34,6 +37,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
+    [HasPermission(PermissionConstants.CategoryCreate)]
     public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
     {
         try
@@ -49,6 +53,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [HasPermission(PermissionConstants.CategoryUpdate)]
     public async Task<IActionResult> Update(Guid id, [FromBody] CreateCategoryDto dto)
     {
         try
@@ -67,6 +72,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [HasPermission(PermissionConstants.CategoryDelete)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try

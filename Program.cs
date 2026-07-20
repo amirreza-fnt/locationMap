@@ -1,3 +1,4 @@
+using Map.Shared.Auth.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using LocationMap.API.Data;
@@ -99,7 +100,14 @@ builder.Services.AddCors(options =>
 
 #endregion
 
-#region 6. Response Compression
+#region 6. Authentication & Authorization
+
+builder.Services.AddMapJwtAuthentication(builder.Configuration);
+builder.Services.AddMapPermissionPolicies();
+
+#endregion
+
+#region 7. Response Compression
 
 builder.Services.AddResponseCompression(options =>
 {
@@ -148,6 +156,7 @@ else
     app.UseCors("AllowFrontend");
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
