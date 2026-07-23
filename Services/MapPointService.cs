@@ -48,24 +48,41 @@ public class MapPointService : IMapPointService
     }
 
     public async Task<(IEnumerable<MapPointListDto> Items, int TotalCount)> GetApprovedAsync(
-        int page, int pageSize, Guid? categoryId = null)
+        int page, int pageSize, Guid? categoryId = null, List<Guid>? visibleCategoryIds = null)
     {
-        var cacheKey = $"{ApprovedCacheKey}_{page}_{pageSize}_{categoryId}";
-        if (_cache.TryGetValue(cacheKey, out (IEnumerable<MapPointListDto> Items, int TotalCount) cached))
+        var effectiveCategoryId = categoryId
+            ?? (visibleCategoryIds?.Count == 1 ? visibleCategoryIds[0] : null);
+
+        var cacheKey = $"{ApprovedCacheKey}_{page}_{pageSize}_{effectiveCategoryId}";
+        if (!UserHasViewRestriction(visibleCategoryIds)
+            && _cache.TryGetValue(cacheKey, out (IEnumerable<MapPointListDto> Items, int TotalCount) cached))
             return cached;
 
-        var points = await _pointRepo.GetApprovedAsync(page, pageSize, categoryId);
-        var totalCount = await _pointRepo.GetApprovedCountAsync(categoryId);
+        var points = await _pointRepo.GetApprovedAsync(page, pageSize, effectiveCategoryId);
+        var totalCount = await _pointRepo.GetApprovedCountAsync(effectiveCategoryId);
 
         var items = points.Select(MapToListDto).ToList();
 
-        var cacheOptions = new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(TimeSpan.FromMinutes(5))
-            .SetSlidingExpiration(TimeSpan.FromMinutes(1));
+        if (UserHasViewRestriction(visibleCategoryIds) && effectiveCategoryId == null)
+        {
+            items = items.Where(x => visibleCategoryIds!.Contains(x.CategoryId)).ToList();
+            totalCount = items.Count;
+        }
 
-        _cache.Set(cacheKey, (Items: (IEnumerable<MapPointListDto>)items, TotalCount: totalCount), cacheOptions);
+        if (!UserHasViewRestriction(visibleCategoryIds))
+        {
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(5))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(1));
+
+            _cache.Set(cacheKey, (Items: (IEnumerable<MapPointListDto>)items, TotalCount: totalCount), cacheOptions);
+        }
+
         return (items, totalCount);
     }
+
+    private static bool UserHasViewRestriction(List<Guid>? visibleCategoryIds)
+        => visibleCategoryIds != null && visibleCategoryIds.Count > 0;
 
     public async Task<IEnumerable<MapPointListDto>> GetByStatusAsync(int status, int page, int pageSize)
     {
@@ -173,9 +190,10 @@ public class MapPointService : IMapPointService
             Latitude = point.Latitude,
             Longitude = point.Longitude,
             Address = point.Address,
+            CategoryId = point.CategoryId,
             CategoryName = point.Category?.Name ?? "",
             CategoryIcon = point.Guide?.Icon,
-            GuideIcon = point.Guide?.Icon,
+            GuideIcon = point.Guide?.MapIcon,
             CategoryColor = point.Category?.Color,
             Status = point.Status,
             SubmittedByName = point.SubmittedBy?.FullName ?? "",
@@ -199,7 +217,7 @@ public class MapPointService : IMapPointService
             GuideId = point.GuideId,
             CategoryName = point.Category?.Name ?? "",
             CategoryIcon = point.Guide?.Icon,
-            GuideIcon = point.Guide?.Icon,
+            GuideIcon = point.Guide?.MapIcon,
             CategoryColor = point.Category?.Color,
             Status = point.Status,
             SubmittedByName = point.SubmittedBy?.FullName ?? "",

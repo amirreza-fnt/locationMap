@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Map.Shared.Auth\Map.Shared.Auth.csproj" />
+    <ProjectReference Include="..\Map.Shared.Auth\Map.Shared.Auth.csproj" />
   </ItemGroup>
 
 </Project>

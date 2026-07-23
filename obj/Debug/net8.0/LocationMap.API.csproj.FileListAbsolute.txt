@@ -143,3 +143,7 @@ D:\project\map\location\obj\Debug\net8.0\refint\LocationMap.API.dll
 D:\project\map\location\obj\Debug\net8.0\LocationMap.API.pdb
 D:\project\map\location\obj\Debug\net8.0\LocationMap.API.genruntimeconfig.cache
 D:\project\map\location\obj\Debug\net8.0\ref\LocationMap.API.dll
+D:\project\map\location\obj\Debug\net8.0\LocationMap.API.sourcelink.json
+D:\project\map\location\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\project\map\location\bin\Debug\net8.0\Map.Shared.Auth.dll
+D:\project\map\location\bin\Debug\net8.0\Map.Shared.Auth.pdb

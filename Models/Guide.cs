@@ -22,6 +22,9 @@ public class Guide
     [MaxLength(100)]
     public string? Icon { get; set; }
 
+    [MaxLength(100)]
+    public string? MapIcon { get; set; }
+
     public int SortOrder { get; set; } = 0;
 
     public bool IsActive { get; set; } = true;

@@ -26,7 +26,17 @@ public class MapPointController : ControllerBase
     {
         try
         {
-            var (items, totalCount) = await _mapPointService.GetApprovedAsync(page, pageSize, categoryId);
+            List<Guid>? visibleCategoryIds = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                visibleCategoryIds = User.FindAll(CustomClaimTypes.VisibleCategory)
+                    .Select(c => Guid.TryParse(c.Value, out var id) ? id : (Guid?)null)
+                    .Where(id => id.HasValue)
+                    .Select(id => id!.Value)
+                    .ToList();
+            }
+
+            var (items, totalCount) = await _mapPointService.GetApprovedAsync(page, pageSize, categoryId, visibleCategoryIds);
             return Ok(new
             {
                 success = true,

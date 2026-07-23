@@ -67,6 +67,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(2000);
             entity.Property(e => e.ImageUrl).HasMaxLength(500);
             entity.Property(e => e.Icon).HasMaxLength(100);
+            entity.Property(e => e.MapIcon).HasMaxLength(100);
         });
 
         modelBuilder.Entity<MapPointMedia>(entity =>
