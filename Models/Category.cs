@@ -22,6 +22,4 @@ public class Category
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    public virtual ICollection<Guide> Guides { get; set; } = new List<Guide>();
 }
