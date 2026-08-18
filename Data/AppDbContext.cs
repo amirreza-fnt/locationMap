@@ -32,6 +32,14 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Latitude).HasPrecision(10, 8);
             entity.Property(e => e.Longitude).HasPrecision(11, 8);
 
+            entity.Property(e => e.VisitLink)
+                .HasComputedColumnSql(
+                    "N'https://map.sabzevar.ir/?layers=' + CAST([CategoryId] AS nvarchar(36)) + N'&id=' + CAST([Id] AS nvarchar(36))",
+                    stored: true)
+                .HasMaxLength(500);
+
+            entity.Property(e => e.ShortVisitLink).HasMaxLength(500);
+
             entity.HasOne(e => e.Category)
                   .WithMany()
                   .HasForeignKey(e => e.CategoryId)

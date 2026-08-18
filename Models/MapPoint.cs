@@ -47,6 +47,18 @@ public class MapPoint
 
     public long VisitCount { get; set; } = 0;
 
+    /// <summary>
+    /// لینک بازدید نقطه روی نقشه — توسط دیتابیس از CategoryId و Id محاسبه می‌شود.
+    /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    public string VisitLink { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// لینک کوتاه بازدید — توسط جاب صف به‌صورت ناهمزمان پر می‌شود.
+    /// </summary>
+    [MaxLength(500)]
+    public string? ShortVisitLink { get; set; }
+
     [ForeignKey(nameof(CategoryId))]
     public virtual Category Category { get; set; } = null!;
 

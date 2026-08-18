@@ -20,4 +20,6 @@ public class MapPointListDto
     public DateTime SubmittedAt { get; set; }
     public string? MainImageUrl { get; set; }
     public long VisitCount { get; set; }
+    public string VisitLink { get; set; } = string.Empty;
+    public string? ShortVisitLink { get; set; }
 }

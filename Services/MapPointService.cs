@@ -199,7 +199,9 @@ public class MapPointService : IMapPointService
             SubmittedByName = point.SubmittedBy?.FullName ?? "",
             SubmittedAt = point.SubmittedAt,
             MainImageUrl = point.Media?.FirstOrDefault(m => m.IsMain)?.FileUrl,
-            VisitCount = point.VisitCount
+            VisitCount = point.VisitCount,
+            VisitLink = point.VisitLink,
+            ShortVisitLink = point.ShortVisitLink
         };
     }
 
@@ -228,6 +230,8 @@ public class MapPointService : IMapPointService
             ReviewNote = point.ReviewNote,
             UpdatedAt = point.UpdatedAt,
             VisitCount = point.VisitCount,
+            VisitLink = point.VisitLink,
+            ShortVisitLink = point.ShortVisitLink,
             Media = point.Media?.Select(m => new MediaDto
             {
                 Id = m.Id,

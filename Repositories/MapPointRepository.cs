@@ -76,25 +76,29 @@ public class MapPointRepository : IMapPointRepository
         return await query.CountAsync();
     }
 
-    public Task<MapPoint> CreateAsync(MapPoint point)
+    public async Task<MapPoint> CreateAsync(MapPoint point)
     {
         point.SubmittedAt = DateTime.UtcNow;
         _context.MapPoints.Add(point);
-        return Task.FromResult(point);
+        await _context.SaveChangesAsync();
+        return point;
     }
 
-    public Task UpdateAsync(MapPoint point)
+    public async Task UpdateAsync(MapPoint point)
     {
         point.UpdatedAt = DateTime.UtcNow;
         _context.MapPoints.Update(point);
-        return Task.CompletedTask;
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
         var point = await _context.MapPoints.FindAsync(id);
         if (point != null)
+        {
             _context.MapPoints.Remove(point);
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task<bool> ExistsAsync(Guid id)

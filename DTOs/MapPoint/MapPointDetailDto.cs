@@ -25,6 +25,8 @@ public class MapPointDetailDto
     public string? ReviewNote { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public long VisitCount { get; set; }
+    public string VisitLink { get; set; } = string.Empty;
+    public string? ShortVisitLink { get; set; }
     public List<MediaDto> Media { get; set; } = new();
 }
 
