@@ -11,6 +11,7 @@ public class MapPointService : IMapPointService
 {
     private readonly IMapPointRepository _pointRepo;
     private readonly IMapUserRepository _userRepo;
+    private readonly IShortLinkClient _shortLinks;
     private readonly IMemoryCache _cache;
     private readonly ILogger<MapPointService> _logger;
     private const string ApprovedCacheKey = "approved_points";
@@ -19,11 +20,13 @@ public class MapPointService : IMapPointService
     public MapPointService(
         IMapPointRepository pointRepo,
         IMapUserRepository userRepo,
+        IShortLinkClient shortLinks,
         IMemoryCache cache,
         ILogger<MapPointService> logger)
     {
         _pointRepo = pointRepo;
         _userRepo = userRepo;
+        _shortLinks = shortLinks;
         _cache = cache;
         _logger = logger;
     }
@@ -117,6 +120,7 @@ public class MapPointService : IMapPointService
         };
 
         await _pointRepo.CreateAsync(point);
+        await EnsureShortVisitLinkAsync(point);
         return point.Id;
     }
 
@@ -124,6 +128,8 @@ public class MapPointService : IMapPointService
     {
         var point = await _pointRepo.GetByIdAsync(id);
         if (point == null) return false;
+
+        var categoryChanged = dto.CategoryId.HasValue && dto.CategoryId.Value != point.CategoryId;
 
         if (dto.Title != null) point.Title = dto.Title;
         if (dto.Description != null) point.Description = dto.Description;
@@ -133,7 +139,11 @@ public class MapPointService : IMapPointService
         if (dto.CategoryId.HasValue) point.CategoryId = dto.CategoryId.Value;
         if (dto.GuideId.HasValue) point.GuideId = dto.GuideId.Value;
 
+        if (categoryChanged)
+            point.ShortVisitLink = null;
+
         await _pointRepo.UpdateAsync(point);
+        await EnsureShortVisitLinkAsync(point);
         InvalidatePointCache(id);
         return true;
     }
@@ -172,6 +182,24 @@ public class MapPointService : IMapPointService
         await _pointRepo.UpdateAsync(point);
         InvalidatePointCache(id);
         return true;
+    }
+
+    private async Task EnsureShortVisitLinkAsync(MapPoint point)
+    {
+        if (!string.IsNullOrWhiteSpace(point.ShortVisitLink))
+            return;
+
+        var longUrl = string.IsNullOrWhiteSpace(point.VisitLink)
+            ? $"https://map.sabzevar.ir/?layers={point.CategoryId}&id={point.Id}"
+            : point.VisitLink;
+
+        var shortUrl = await _shortLinks.CreateShortUrlAsync(longUrl);
+        if (string.IsNullOrWhiteSpace(shortUrl))
+            return;
+
+        point.ShortVisitLink = shortUrl;
+        await _pointRepo.UpdateAsync(point);
+        InvalidatePointCache(point.Id);
     }
 
     private void InvalidatePointCache(Guid id)

@@ -80,8 +80,15 @@ public class MapPointController : ControllerBase
         try
         {
             var id = await _mapPointService.CreateAsync(dto);
+            var point = await _mapPointService.GetByIdAsync(id);
             _logger.LogInformation("MapPoint {Id} created", id);
-            return Ok(new { success = true, message = "نقطه با موفقیت ثبت شد. پس از تایید نمایش داده می‌شود.", id });
+            return Ok(new
+            {
+                success = true,
+                message = "نقطه با موفقیت ثبت شد. پس از تایید نمایش داده می‌شود.",
+                id,
+                data = point
+            });
         }
         catch (InvalidOperationException ex)
         {

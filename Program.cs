@@ -125,6 +125,12 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IMapUserRepository, MapUserRepository>();
 builder.Services.AddScoped<IMapPointService, MapPointService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddHttpClient<IShortLinkClient, ShortLinkClient>(client =>
+{
+    var baseUrl = builder.Configuration["ShortLinks:BaseUrl"] ?? "http://185.255.91.242:5013";
+    client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
+    client.Timeout = TimeSpan.FromSeconds(8);
+});
 
 #endregion
 
