@@ -1,27 +1,10 @@
 /*
-    جداول و فیلدهای لینک بازدید + صف لینک کوتاه
-    دیتابیس: apiweb-locationsmap
+    ساده‌سازی صف لینک کوتاه طبق نظر کارفرما:
+    فقط PointId در صف می‌ماند.
+    لینک کوتاه موفق روی MapPoints.ShortVisitLink ذخیره می‌شود.
+    خطا ذخیره نمی‌شود؛ سیکل بعد دوباره تلاش می‌شود.
 */
 USE [apiweb-locationsmap];
-GO
-
-IF COL_LENGTH('dbo.MapPoints', 'ShortVisitLink') IS NULL
-BEGIN
-    ALTER TABLE dbo.MapPoints
-        ADD ShortVisitLink NVARCHAR(500) NULL;
-END
-GO
-
-IF COL_LENGTH('dbo.MapPoints', 'VisitLink') IS NULL
-BEGIN
-    ALTER TABLE dbo.MapPoints
-        ADD VisitLink AS (
-            N'https://map.sabzevar.ir/?layers='
-            + CAST(CategoryId AS NVARCHAR(36))
-            + N'&id='
-            + CAST(Id AS NVARCHAR(36))
-        ) PERSISTED;
-END
 GO
 
 IF OBJECT_ID('dbo.tr_MapPoints_EnqueueShortLink', 'TR') IS NOT NULL
@@ -73,21 +56,4 @@ WHERE mp.ShortVisitLink IS NULL
   AND NOT EXISTS (
         SELECT 1 FROM dbo.ShortLinkQueue AS q WHERE q.PointId = mp.Id
     );
-GO
-
-SELECT
-    N'MapPoints.VisitLink' AS ObjectName,
-    CASE WHEN COL_LENGTH('dbo.MapPoints', 'VisitLink') IS NULL THEN N'MISSING' ELSE N'OK' END AS Status
-UNION ALL
-SELECT
-    N'MapPoints.ShortVisitLink',
-    CASE WHEN COL_LENGTH('dbo.MapPoints', 'ShortVisitLink') IS NULL THEN N'MISSING' ELSE N'OK' END
-UNION ALL
-SELECT
-    N'ShortLinkQueue',
-    CASE WHEN OBJECT_ID('dbo.ShortLinkQueue', 'U') IS NULL THEN N'MISSING' ELSE N'OK' END
-UNION ALL
-SELECT
-    N'tr_MapPoints_EnqueueShortLink',
-    CASE WHEN OBJECT_ID('dbo.tr_MapPoints_EnqueueShortLink', 'TR') IS NULL THEN N'MISSING' ELSE N'OK' END;
 GO
